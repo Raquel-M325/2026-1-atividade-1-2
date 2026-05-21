@@ -1,0 +1,50 @@
+services:
+  echo-server:
+    build:
+      context: ./servidor
+    container_name: echo-server
+    environment:
+      HOST: 0.0.0.0
+      PORT: "5000"
+    healthcheck:
+      test: ["CMD", "lua", "-c", "import socket,sys;s=socket.socket();s.settimeout(1);ok=True\ntry:\n s.connect(('127.0.0.1',5000))\nexcept OSError:\n ok=False\nfinally:\n s.close()\nsys.exit(0 if ok else 1)"]
+      interval: 2s
+      timeout: 1s
+      retries: 5
+    ports:
+      - "5000:5000"
+
+  echo-client:
+    build:
+      context: ./teste_cliente
+    container_name: echo-client
+    depends_on:
+      echo-server:
+        condition: service_healthy
+    environment:
+      ECHO_HOST: echo-server
+      ECHO_PORT: "5000"
+      ECHO_MESSAGE: "Nova mensagem de teste"
+
+
+# version: '3.8'
+
+# services:
+#   servidor:
+#     build: .
+#     image: lua-network-app
+#     container_name: lua_server
+#     command: lua5.4 servert.lua
+#     ports:
+#       - "8080:8080"
+
+#   cliente:
+#     image: lua-network-app
+#     container_name: lua_client
+#     command: lua5.4 clientet.lua
+#     environment:
+#       - SERVER_HOST=servidor  # O Docker resolve o nome do serviço para o IP correto automaticamente
+#     depends_on:
+#       - servidor
+#     stdin_open: true          # Permite interagir com o terminal do container (io.read)
+#     tty: true                 # Habilita o terminal colorido/formatado
