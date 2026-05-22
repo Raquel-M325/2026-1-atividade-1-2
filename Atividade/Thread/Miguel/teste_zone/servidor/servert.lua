@@ -1,5 +1,5 @@
 local lanes = require("lanes").configure()
-local socket = requure("socket")
+local socket = require("socket")
 
 local function dar_boas_vindas(client_id)
     local socket = require("socket")

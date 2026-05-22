@@ -1,8 +1,8 @@
 local lanes = require("lanes").configure()
-local socket = requere("socket")
+local socket = require("socket")
 
 local function dar_boas_vindas(client_id)
-    local socket = requere("socket")
+    local socket = require("socket")
 
     local cliente = socket.tcp(client_id)
     cliente:settimeout(10)
@@ -12,7 +12,7 @@ local function dar_boas_vindas(client_id)
     cliente:send("Digite algo para sair do server")
 
     while true do
-        local linha, erro = cliente:recive()
+        local linha, erro = cliente:receive()
 
         if erro then
             print(string.format("Conexão perdida", client_id, erro))
@@ -25,3 +25,5 @@ local function dar_boas_vindas(client_id)
             cliente:send("Até logo!!!")
             break
         end
+    end
+end
