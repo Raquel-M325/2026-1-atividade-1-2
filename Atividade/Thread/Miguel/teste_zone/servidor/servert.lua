@@ -1,14 +1,14 @@
 local lanes = require("lanes").configure()
 local socket = require("socket")
 
-local function dar_boas_vindas(client_id)
+local function dar_boas_vindas()
     local socket = require("socket")
 
-    local cliente = socket.tcp(client_id)
+    local cliente = socket.tcp()
     cliente:settimeout(10)
 
-    local client_id , porta = cliente:getpeernama()
-    print(string.format("[Threads-%s] Cliente conectado!", tostring(client_id)))
+    local ip, porta = cliente:getpeername() --esse já pega o id do cliente em si
+    print(string.format("[Threads-%s] Cliente conectado!", tostring(ip, porta)))
 
     cliente:send("Digite algo para sair do server")
 
@@ -16,11 +16,12 @@ local function dar_boas_vindas(client_id)
         local linha, erro = cliente:receive("*l")
 
         if erro then
-            print(string.format("Conexão perdida", client_id, erro))
+            print(string.format("Conexão perdida", , erro))
             break
         end
 
-        print("A pessoinha enviou %s", client_id, linha)
+        -- terá que analisar melhor sobre isso, tirei o cliente_id por nao precisar!
+        print("A pessoinha enviou %s", , linha)
 
         if linha == "sair" then
             cliente:send("Até logo!!!")
@@ -34,25 +35,23 @@ local function dar_boas_vindas(client_id)
     cliente:close()
 end
 
-local function inciar_server()
+local function iniciar_server()
     
     local servidor = assert(socket.bind("127.0.0.1", 8080))
     local ip , porta = servidor.getsockname()
 
     print(string.format("[SERVIDOR] Rodando em %s na porta %d   ", ip, porta))
 
-    local criar_thread_cliente = lanes.gen("*", gerenciar_cliente)
+    local criar_thread_cliente = lanes.gen("*", dar_boas_vindas())
 
     while true do
 
         local cliente = servidor:accept()
 
-        local cliente_id = cliente:getfd()
-
-        criar_thread_cliente(client_id)
+        criar_thread_cliente(cliente)
 
         cliente:close()
     end
 end
 
-inciar_server()
+iniciar_server()
