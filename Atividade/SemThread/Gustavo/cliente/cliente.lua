@@ -2,13 +2,13 @@ local socket = require("socket") --importa biblioteca de sockets do lua
 
 local cliente = socket.tcp() --cria socket tpc
 
-cliente:connect("host.docker.internal", 8080) --cliente vai conectar no servidor na porta 8080
+cliente:connect("127.0.0.1", 8080) --cliente vai conectar no servidor na porta 8080
 
-print("Já está conectado ao servidoorrr!!") --printa
+print("Cliente conectado ao servidor!") --printa
 
 while true do -- enquanto for verdade, faça
 
-    io.write("Escreve algo ai meu xapa") --mostra texto na tela sem quebrar linha
+    io.write("Escrever algo: ") --mostra texto na tela sem quebrar linha
     local msg = io.read() -- le algo digitado pelo usuario no teclado
 
     if msg == "sair" then -- se a mensagem for "sair", entao
