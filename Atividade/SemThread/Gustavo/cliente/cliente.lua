@@ -2,7 +2,7 @@ local socket = require("socket") --importa biblioteca de sockets do lua
 
 local cliente = socket.tcp() --cria socket tpc
 
-cliente:connect("127.0.0.1", 8080) --cliente vai conectar no servidor na porta 8080
+cliente:connect("host.docker.internal", 8080) --cliente vai conectar no servidor na porta 8080
 
 print("Já está conectado ao servidoorrr!!") --printa
 
